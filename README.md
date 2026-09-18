@@ -55,3 +55,65 @@
 3. **상태 갱신**: 캐릭터 위치, 코인 상태, 협동 장치 위치 등 서버가 들고 있는 "진짜 게임 상태"를 업데이트
 4. **판정 처리**: 이번 틱에 코인을 먹었는지, 공동 코인 조건이 충족됐는지, 협동 장치가 목적지에 도달했는지 등을 체크
 5. **브로드캐스트**: 갱신된 상태 중 각 플레이어에게 필요한 부분만(시야 제한 반영해서) 전송
+
+# 패킷 정의 — 협동 미로 탈출 게임
+
+## 1. 접속 / 인증
+
+| 패킷명 | 방향 | 설명 |
+|---|---|---|
+| CS_LOGIN | C→S | 로그인/인증 요청 |
+| SC_LOGIN_RESULT | S→C | 인증 결과 통보 |
+
+## 2. 방(Room) 관리
+
+| 패킷명 | 방향 | 설명 |
+|---|---|---|
+| CS_CREATE_ROOM | C→S | 방 생성 요청 |
+| CS_JOIN_ROOM | C→S | 초대 코드로 방 참가 |
+| SC_ROOM_INFO | S→C | 방 참가자 목록/상태 갱신 |
+| CS_START_GAME | C→S | 게임 시작 요청 (방장 전용) |
+| SC_GAME_START | S→C | 게임 시작 알림 (미로, 스폰 위치, 코인 정보) |
+
+## 3. 이동 / 시야
+
+| 패킷명 | 방향 | 설명 |
+|---|---|---|
+| CS_MOVE | C→S | 이동 입력 전송 |
+| SC_PLAYER_POSITION | S→C | 플레이어 위치 갱신 브로드캐스트 |
+| SC_VISIBLE_AREA | S→C | 시야(Fog of War) 내 탐색 정보 |
+
+## 4. 코인
+
+| 패킷명 | 방향 | 설명 |
+|---|---|---|
+| CS_COIN_PING | C→S | 코인 위치 공유(핑) 요청 |
+| SC_COIN_PING_BROADCAST | S→C | 핑 정보를 팀원에게 중계 |
+| CS_COIN_COLLECT | C→S | 코인 습득 시도 |
+| SC_COIN_COLLECTED | S→C | 코인 획득 결과 (개인/공동) |
+
+## 5. 협동 장치 (WASD 분할 조작)
+
+| 패킷명 | 방향 | 설명 |
+|---|---|---|
+| SC_DEVICE_BOARD | S→C | 탑승 감지 및 키 배정 통보 |
+| CS_DEVICE_KEY_INPUT | C→S | 배정된 키 입력 전송 |
+| SC_DEVICE_STATE | S→C | 장치 위치/상태 갱신 |
+| SC_DEVICE_RESULT | S→C | 장치 성공/실패 결과 |
+
+## 6. 기타 이벤트
+
+| 패킷명 | 방향 | 설명 |
+|---|---|---|
+| SC_TRAP_TRIGGERED | S→C | 함정 발동 알림 및 페널티 |
+| CS_RESCUE | C→S | 다운된 팀원 구조 시도 |
+| SC_PLAYER_DOWN / SC_PLAYER_RESCUED | S→C | 다운/구조 상태 변경 |
+| SC_TIMER_UPDATE | S→C | 남은 시간 동기화 |
+| SC_GAME_RESULT | S→C | 최종 결과(탈출 성공/실패, 점수, 순위) |
+
+## 7. 재접속
+
+| 패킷명 | 방향 | 설명 |
+|---|---|---|
+| CS_RECONNECT | C→S | 재접속 요청 |
+| SC_RECONNECT_STATE | S→C | 이전 상태 복원 |
