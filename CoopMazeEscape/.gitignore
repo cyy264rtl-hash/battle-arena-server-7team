@@ -1,0 +1,14 @@
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+.vs/
+*.csproj
+*.sln
+
+# 저장소 루트의 Visual Studio용 .gitignore가 막는 Unity 필수 파일 다시 포함
+!*.meta
+!/Packages/*
