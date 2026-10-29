@@ -1,0 +1,9 @@
+업체 의견 5 확인 : 서버가 STATE 를 실제로 몇 ms 간격으로 보내는지 5초 동안 측정
+서버 : 고친 코드 (UdpServer TICK_MS = 33, await Task.Delay(33))
+포트 : TCP 12810 · UDP 12811 / 접속 1명 (TickBot, PlayerId 1)
+
+5초 동안 받은 STATE : 110개  →  초당 22.0회 (목표 30회)
+간격 평균 : 45.8 ms
+간격 최소 : 44.8 ms
+간격 최대 : 47.4 ms
+간격 중앙 : 45.7 ms
