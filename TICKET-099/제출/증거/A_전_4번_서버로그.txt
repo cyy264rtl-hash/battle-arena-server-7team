@@ -1,0 +1,20 @@
+╔══════════════════════════════════════════╗
+║   배틀아레나 서버  (외주 납품본 v0.9)      ║
+║   TICKET-099  인수 검토 대상               ║
+╚══════════════════════════════════════════╝
+
+  학번 22220290 / 박근형
+  TCP 12810  ·  UDP 12811
+
+[TCP] 포트 12810번에서 접속을 기다립니다
+[UDP] 포트 12811번에서 위치 패킷을 기다립니다
+
+[통계 22220290] t=    2s | 접속    0 | 스레드   2 | 가용워커 32766 | UDP적용      0 | 버림     0
+Unhandled exception. Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot convert null to 'int' because it is a non-nullable value type
+   at CallSite.Target(Closure, CallSite, Object)
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at CallSite.Target(Closure, CallSite, Object)
+   at BattleArena.ClientSession.HandlePacket(String json) in C:\Users\rmsgu\OneDrive\바탕 화면\game_saver\battle-arena-server-7team\TICKET-099\OutsourcedServer\ClientSession.cs:line 73
+   at System.Threading.Tasks.Task.<>c.<ThrowAsync>b__128_1(Object state)
+   at System.Threading.ThreadPoolWorkQueue.Dispatch()
+   at System.Threading.PortableThreadPool.WorkerThread.WorkerThreadStart()
