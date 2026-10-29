@@ -44,25 +44,43 @@ namespace BattleArena
         // ═══════════════════════════════════════
         public static async Task<string?> ReceiveAsync(Socket socket)
         {
-            byte[] header = new byte[4];
-
             // 먼저 헤더 4바이트를 읽어 본문 길이를 알아냅니다.
             // 기다리는 동안 스레드를 잡지 않도록 ReceiveAsync를 await합니다.
-            int n = await socket.ReceiveAsync(new ArraySegment<byte>(header, 0, 4), SocketFlags.None);
-
-            if (n == 0) return null;          // 상대가 연결을 닫음
+            byte[]? header = await ReceiveExactAsync(socket, 4);
+            if (header == null) return null;  // 상대가 연결을 닫음
 
             int bodyLength = BitConverter.ToInt32(header, 0);
 
             // 말도 안 되는 길이가 오면 끊습니다 (악성 패킷 방어)
             if (bodyLength <= 0 || bodyLength > MAX_BODY) return null;
 
-            byte[] body = new byte[bodyLength];
-
             // 알아낸 길이만큼 본문을 읽습니다.
-            await socket.ReceiveAsync(new ArraySegment<byte>(body, 0, bodyLength), SocketFlags.None);
+            byte[]? body = await ReceiveExactAsync(socket, bodyLength);
+            if (body == null) return null;
 
             return Encoding.UTF8.GetString(body, 0, bodyLength);
+        }
+
+        /// <summary>
+        /// count 바이트를 다 받을 때까지 반복해서 읽습니다.
+        /// TCP는 경계를 보장하지 않아서 한 번에 일부만 올 수 있습니다.
+        /// </summary>
+        private static async Task<byte[]?> ReceiveExactAsync(Socket socket, int count)
+        {
+            byte[] buffer = new byte[count];
+            int received = 0;
+
+            while (received < count)
+            {
+                int n = await socket.ReceiveAsync(
+                    new ArraySegment<byte>(buffer, received, count - received),
+                    SocketFlags.None);
+
+                if (n == 0) return null;      // 상대가 연결을 닫음
+                received += n;
+            }
+
+            return buffer;
         }
     }
 }
